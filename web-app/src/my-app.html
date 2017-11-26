@@ -44,24 +44,37 @@
     <div>
       <div>
         <span>Users</span>
-        <paper-icon-button icon="autorenew" on-click="_handleRefreshButtonClicked"></paper-icon-button>
+      </div>
+      <div id="newUserForm" hidden>
+        <label for="username">Username</label>
+        <input id="username" type="text">
+        <br>
+        <label for="password">Password</label>
+        <input id="password" type="text">
       </div>
       <table>
         <tr>
           <th>Username</th>
-          <th>Password</th> 
+          <th>Password</th>
+          <th>
+            <paper-icon-button icon="autorenew" on-click="_handleRefreshButtonClicked"></paper-icon-button> 
+            <paper-icon-button icon="add" on-click="_handleAddButtonClicked"></paper-icon-button>
+          </th>
         </tr>
         <template is="dom-repeat" items="[[users]]" as="user">
           <tr>
             <td>[[user.Username]]</td>
-            <td>[[user.Password]]</td> 
+            <td>[[user.Password]]</td>
+            <td>
+              <paper-icon-button icon="create" on-click="_handleEditButtonClicked"></paper-icon-button> 
+              <paper-icon-button icon="delete" on-click="_handleDeleteButtonClicked"></paper-icon-button>
+            </td> 
           </tr>
         </template>
       </table>
     </div>
 
     <iron-ajax
-      auto
       id="getUsersRequest"
       method="GET"
       url="https://0wx01ys37k.execute-api.us-east-1.amazonaws.com/dev"
@@ -94,6 +107,18 @@
 
       _handleRefreshButtonClicked(event){
         this.$.getUsersRequest.generateRequest();
+      }
+
+      _handleAddButtonClicked(event){
+        this.$.newUserForm.hidden = false;
+      }
+
+      _handleDeleteButtonClicked(event){
+
+      }
+
+      _handleEditButtonClicked(event){
+        
       }
     }
 
