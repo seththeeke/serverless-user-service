@@ -2,6 +2,7 @@
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 
 <dom-module id="my-app">
   <template>
@@ -46,19 +47,23 @@
         <span>Users</span>
       </div>
       <div id="newUserForm" hidden>
-        <label for="username">Username</label>
-        <input id="username" type="text">
-        <br>
-        <label for="password">Password</label>
-        <input id="password" type="text">
+        <input id="username" placeholder="Username" type="text">
+        <input id="password" placeholder="Password" type="text">
         <paper-icon-button icon="check" on-click="_handleCheckButtonClicked"></paper-icon-button> 
       </div>
-      <table>
-        <tr>
+      <div id="updateUserForm" hidden>
+        <input id="updateUsername" placeholder="Username" type="text">
+        <input id="updatePassword" placeholder="Password" type="text">
+        <paper-icon-button icon="check" on-click="_handleUpdateCheckButtonClicked"></paper-icon-button> 
+      </div>
+      <paper-spinner id="tableSpinner" active>
+      </paper-spinner>
+      <table id="userTable">
+        <tr id="tableHeaderRow">
           <th>Username</th>
           <th>Password</th>
           <th>
-            <paper-icon-button icon="autorenew" on-click="_handleRefreshButtonClicked"></paper-icon-button> 
+            <paper-icon-button icon="autorenew" on-click="_updateUserTable"></paper-icon-button> 
             <paper-icon-button icon="add" on-click="_handleAddButtonClicked"></paper-icon-button>
           </th>
         </tr>
@@ -76,6 +81,7 @@
     </div>
 
     <iron-ajax
+      auto
       id="getUsersRequest"
       method="GET"
       url="https://0wx01ys37k.execute-api.us-east-1.amazonaws.com/dev"
@@ -87,21 +93,21 @@
       method="POST"
       url="https://0wx01ys37k.execute-api.us-east-1.amazonaws.com/dev"
       handle-as="json"
-      on-response="handleUserAdded"></iron-ajax>
+      on-response="_updateUserTable"></iron-ajax>
 
     <iron-ajax
       id="updateUserRequest"
       method="PUT"
       url="https://0wx01ys37k.execute-api.us-east-1.amazonaws.com/dev"
       handle-as="json"
-      on-response="handleUserUpdated"></iron-ajax>  
+      on-response="_updateUserTable"></iron-ajax>  
 
     <iron-ajax
       id="deleteUserRequest"
       method="DELETE"
       url="https://0wx01ys37k.execute-api.us-east-1.amazonaws.com/dev"
       handle-as="json"
-      on-response="handleUserDeleted"></iron-ajax>  
+      on-response="_updateUserTable"></iron-ajax>  
   </template>
 
   <script>
@@ -118,41 +124,35 @@
         };
       }
 
-      static get observers() {
-        return [
-        ];
-      }
-
       handleGetUsers(event){
         this.set("users", event.detail.response);
-      }
-
-      handleUserAdded(event){
-        console.log(event);
-      }
-
-      handleUserUpdated(event){
-
-      }
-
-      handleUserDeleted(event){
-        console.log("User Deleted");
-      }
-
-      _handleRefreshButtonClicked(event){
-        this.$.getUsersRequest.generateRequest();
+        this.$.tableSpinner.active = false;
       }
 
       _handleAddButtonClicked(event){
         this.$.newUserForm.hidden = false;
       }
 
-      _handleDeleteButtonClicked(event){
-
+      _handleEditButtonClicked(event){
+        this.$.updateUserForm.hidden = false;
       }
 
-      _handleEditButtonClicked(event){
+      _handleDeleteButtonClicked(event){
+        var body = {};
+        body.Username = event.path[4].cells[0].innerHTML;
+        this.$.deleteUserRequest.body = body;
+        this.$.deleteUserRequest.headers['Content-Type'] = "application/json";
+        this.$.deleteUserRequest.generateRequest();
+      }
 
+      _handleUpdateCheckButtonClicked(event){
+        this.$.newUserForm.hidden = false;
+        var body = {};
+        body.Username = this.$.updateUsername.value;
+        body.Password = this.$.updatePassword.value;
+        this.$.updateUserRequest.body = body;
+        this.$.updateUserRequest.headers['Content-Type'] = "application/json";
+        this.$.updateUserRequest.generateRequest();
       }
 
       _handleCheckButtonClicked(event){
@@ -162,6 +162,11 @@
         this.$.addUserRequest.body = body;
         this.$.addUserRequest.headers['Content-Type'] = "application/json";
         this.$.addUserRequest.generateRequest();
+      }
+
+      _updateUserTable(){
+        this.$.tableSpinner.active = true;
+        this.$.getUsersRequest.generateRequest();
       }
     }
 
