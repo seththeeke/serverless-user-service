@@ -3,10 +3,6 @@
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
-<link rel="import" href="../bower_components/app-route/app-location.html">
-<link rel="import" href="../bower_components/app-route/app-route.html">
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 
 <dom-module id="my-app">
   <template>
@@ -65,97 +61,78 @@
       }
     </style>
 
-    <app-location route="{{route}}"></app-location>
-    <app-route
-      route="{{route}}"
-      pattern="/:page"
-      data="{{routeData}}"
-      tail="{{subroute}}"></app-route>
-
-    <iron-selector hidden selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-      <a name="serverless-user-service" href="/serverless-user-service">serverless-user-service</a>
-    </iron-selector>
-      
-    <iron-pages
-      selected="[[page]]"
-      attr-for-selected="name"
-      fallback-selection="serverless-user-service"
-      role="main">
-      <div name="serverless-user-service" class="page">  
-        <img src="images/aws_logo.png"><h1>Serverless User Service</h1>
-        <p>
-        This is a simple application that communicates with AWS API Gateway in order to invoke Lambda functions to perform CRUD operations on a Dynamo DB Table
-        </p>
-        <div>
-          <div>
-            <span>Users</span>
-          </div>
-          <div id="newUserForm" hidden>
-            <input id="username" placeholder="Username" type="text">
-            <input id="password" placeholder="Password" type="text">
-            <paper-icon-button icon="check" on-click="_handleCheckButtonClicked"></paper-icon-button> 
-          </div>
-          <div id="updateUserForm" hidden>
-            <input id="updateUsername" placeholder="Username" type="text">
-            <input id="updatePassword" placeholder="Password" type="text">
-            <paper-icon-button icon="check" on-click="_handleUpdateCheckButtonClicked"></paper-icon-button> 
-          </div>
-          <paper-spinner id="tableSpinner" active>
-          </paper-spinner>
-          <div id="tableWrapper" hidden>
-            <table id="userTable">
-              <tr id="tableHeaderRow">
-                <th>Username</th>
-                <th>Password</th>
-                <th>
-                  <paper-icon-button icon="autorenew" on-click="_updateUserTable"></paper-icon-button> 
-                  <paper-icon-button icon="add" on-click="_handleAddButtonClicked"></paper-icon-button>
-                </th>
-              </tr>
-              <template is="dom-repeat" items="[[users]]" as="user">
-                <tr>
-                  <td>[[user.Username]]</td>
-                  <td>[[user.Password]]</td>
-                  <td>
-                    <paper-icon-button icon="create" on-click="_handleEditButtonClicked"></paper-icon-button> 
-                    <paper-icon-button icon="delete" on-click="_handleDeleteButtonClicked"></paper-icon-button>
-                  </td> 
-                </tr>
-              </template>
-            </table>
-          </div>
-        </div>
-
-        <iron-ajax
-          auto
-          id="getUsersRequest"
-          method="GET"
-          url="https://0wx01ys37k.execute-api.us-east-1.amazonaws.com/dev"
-          handle-as="json"
-          on-response="handleGetUsers"></iron-ajax>
-
-        <iron-ajax
-          id="addUserRequest"
-          method="POST"
-          url="https://0wx01ys37k.execute-api.us-east-1.amazonaws.com/dev"
-          handle-as="json"
-          on-response="_updateUserTable"></iron-ajax>
-
-        <iron-ajax
-          id="updateUserRequest"
-          method="PUT"
-          url="https://0wx01ys37k.execute-api.us-east-1.amazonaws.com/dev"
-          handle-as="json"
-          on-response="_updateUserTable"></iron-ajax>  
-
-        <iron-ajax
-          id="deleteUserRequest"
-          method="DELETE"
-          url="https://0wx01ys37k.execute-api.us-east-1.amazonaws.com/dev"
-          handle-as="json"
-          on-response="_updateUserTable"></iron-ajax>
+    <img src="images/aws_logo.png"><h1>Serverless User Service</h1>
+    <p>
+    This is a simple application that communicates with AWS API Gateway in order to invoke Lambda functions to perform CRUD operations on a Dynamo DB Table
+    </p>
+    <div>
+      <div>
+        <span>Users</span>
       </div>
-    </iron-pages>  
+      <div id="newUserForm" hidden>
+        <input id="username" placeholder="Username" type="text">
+        <input id="password" placeholder="Password" type="text">
+        <paper-icon-button icon="check" on-click="_handleCheckButtonClicked"></paper-icon-button> 
+      </div>
+      <div id="updateUserForm" hidden>
+        <input id="updateUsername" placeholder="Username" type="text">
+        <input id="updatePassword" placeholder="Password" type="text">
+        <paper-icon-button icon="check" on-click="_handleUpdateCheckButtonClicked"></paper-icon-button> 
+      </div>
+      <paper-spinner id="tableSpinner" active>
+      </paper-spinner>
+      <div id="tableWrapper" hidden>
+        <table id="userTable">
+          <tr id="tableHeaderRow">
+            <th>Username</th>
+            <th>Password</th>
+            <th>
+              <paper-icon-button icon="autorenew" on-click="_updateUserTable"></paper-icon-button> 
+              <paper-icon-button icon="add" on-click="_handleAddButtonClicked"></paper-icon-button>
+            </th>
+          </tr>
+          <template is="dom-repeat" items="[[users]]" as="user">
+            <tr>
+              <td>[[user.Username]]</td>
+              <td>[[user.Password]]</td>
+              <td>
+                <paper-icon-button icon="create" on-click="_handleEditButtonClicked"></paper-icon-button> 
+                <paper-icon-button icon="delete" on-click="_handleDeleteButtonClicked"></paper-icon-button>
+              </td> 
+            </tr>
+          </template>
+        </table>
+      </div>
+    </div>
+
+    <iron-ajax
+      auto
+      id="getUsersRequest"
+      method="GET"
+      url="https://0wx01ys37k.execute-api.us-east-1.amazonaws.com/dev"
+      handle-as="json"
+      on-response="handleGetUsers"></iron-ajax>
+
+    <iron-ajax
+      id="addUserRequest"
+      method="POST"
+      url="https://0wx01ys37k.execute-api.us-east-1.amazonaws.com/dev"
+      handle-as="json"
+      on-response="_updateUserTable"></iron-ajax>
+
+    <iron-ajax
+      id="updateUserRequest"
+      method="PUT"
+      url="https://0wx01ys37k.execute-api.us-east-1.amazonaws.com/dev"
+      handle-as="json"
+      on-response="_updateUserTable"></iron-ajax>  
+
+    <iron-ajax
+      id="deleteUserRequest"
+      method="DELETE"
+      url="https://0wx01ys37k.execute-api.us-east-1.amazonaws.com/dev"
+      handle-as="json"
+      on-response="_updateUserTable"></iron-ajax>  
   </template>
 
   <script>
@@ -168,21 +145,8 @@
         return {
             users: {
               type: Array,
-            },
-
-            page: {
-              type: String,
-              reflectToAttribute: true,
-              observer: '_pageChanged',
             }
         };
-      }
-
-      _pageChanged(page) {
-        if (page !== "serverless-user-service") {
-          var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
-          this.importHref(resolvedPageUrl, null, this._showPage404, true);
-        }
       }
 
       handleGetUsers(event){
