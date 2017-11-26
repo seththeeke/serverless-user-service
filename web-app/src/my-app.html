@@ -1,26 +1,68 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 
 <dom-module id="my-app">
   <template>
     <style>
+      table {
+        display: inline-block;
+        background-color: white;
+      }
+
+      th {
+        background-color: #ab0431;
+        padding: 10px;
+        font-size: 1.2em;
+        color: white;
+      }
+
+      td {
+        background-color: #80808052;
+        color: black;
+        font-size: 1em;
+        text-align: left;
+        padding-left: 10px;
+      }
+
+      div {
+        text-align: center;
+      }
+
+      h1 {
+        padding-left: 25px;
+      }
+
+      span {
+        font-size: 20px;
+        font-weight: bold;
+      }
     </style>
-    <h1>Servless User Service</h1>
-    <table>
-      <tr>
-        <th>Username</th>
-        <th>Password</th> 
-      </tr>
-      <template is="dom-repeat" items="[[users]]" as="user">
+
+    <h1>Serverless User Service</h1>
+    <div>
+      <div>
+        <span>Users</span>
+        <paper-icon-button icon="autorenew" on-click="_handleRefreshButtonClicked"></paper-icon-button>
+      </div>
+      <table>
         <tr>
-          <td>[[user.Username]]</td>
-          <td>[[user.Password]]</td> 
+          <th>Username</th>
+          <th>Password</th> 
         </tr>
-      </template>
-    </table>
+        <template is="dom-repeat" items="[[users]]" as="user">
+          <tr>
+            <td>[[user.Username]]</td>
+            <td>[[user.Password]]</td> 
+          </tr>
+        </template>
+      </table>
+    </div>
 
     <iron-ajax
       auto
+      id="getUsersRequest"
       method="GET"
       url="https://0wx01ys37k.execute-api.us-east-1.amazonaws.com/dev"
       handle-as="json"
@@ -48,6 +90,10 @@
 
       handleGetUsers(event){
         this.set("users", event.detail.response);
+      }
+
+      _handleRefreshButtonClicked(event){
+        this.$.getUsersRequest.generateRequest();
       }
     }
 
