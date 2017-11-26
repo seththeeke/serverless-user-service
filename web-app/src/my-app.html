@@ -1,10 +1,30 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="my-app">
   <template>
     <style>
     </style>
-    <h1>Hello World</h1>
+    <h1>Servless User Service</h1>
+    <table>
+      <tr>
+        <th>Username</th>
+        <th>Password</th> 
+      </tr>
+      <template is="dom-repeat" items="[[users]]" as="user">
+        <tr>
+          <td>[[user.Username]]</td>
+          <td>[[user.Password]]</td> 
+        </tr>
+      </template>
+    </table>
+
+    <iron-ajax
+      auto
+      method="GET"
+      url="https://0wx01ys37k.execute-api.us-east-1.amazonaws.com/dev"
+      handle-as="json"
+      on-response="handleGetUsers"></iron-ajax>
   </template>
 
   <script>
@@ -15,12 +35,19 @@
 
       static get properties() {
         return {
+            users: {
+              type: Array,
+            }
         };
       }
 
       static get observers() {
         return [
         ];
+      }
+
+      handleGetUsers(event){
+        this.set("users", event.detail.response);
       }
     }
 
