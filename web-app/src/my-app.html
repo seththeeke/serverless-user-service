@@ -51,6 +51,7 @@
         <br>
         <label for="password">Password</label>
         <input id="password" type="text">
+        <paper-icon-button icon="check" on-click="_handleCheckButtonClicked"></paper-icon-button> 
       </div>
       <table>
         <tr>
@@ -80,6 +81,27 @@
       url="https://0wx01ys37k.execute-api.us-east-1.amazonaws.com/dev"
       handle-as="json"
       on-response="handleGetUsers"></iron-ajax>
+
+    <iron-ajax
+      id="addUserRequest"
+      method="POST"
+      url="https://0wx01ys37k.execute-api.us-east-1.amazonaws.com/dev"
+      handle-as="json"
+      on-response="handleUserAdded"></iron-ajax>
+
+    <iron-ajax
+      id="updateUserRequest"
+      method="PUT"
+      url="https://0wx01ys37k.execute-api.us-east-1.amazonaws.com/dev"
+      handle-as="json"
+      on-response="handleUserUpdated"></iron-ajax>  
+
+    <iron-ajax
+      id="deleteUserRequest"
+      method="DELETE"
+      url="https://0wx01ys37k.execute-api.us-east-1.amazonaws.com/dev"
+      handle-as="json"
+      on-response="handleUserDeleted"></iron-ajax>  
   </template>
 
   <script>
@@ -105,6 +127,18 @@
         this.set("users", event.detail.response);
       }
 
+      handleUserAdded(event){
+        console.log(event);
+      }
+
+      handleUserUpdated(event){
+
+      }
+
+      handleUserDeleted(event){
+        console.log("User Deleted");
+      }
+
       _handleRefreshButtonClicked(event){
         this.$.getUsersRequest.generateRequest();
       }
@@ -118,7 +152,16 @@
       }
 
       _handleEditButtonClicked(event){
-        
+
+      }
+
+      _handleCheckButtonClicked(event){
+        var body = {};
+        body.Username = this.$.username.value;
+        body.Password = this.$.password.value;
+        this.$.addUserRequest.body = body;
+        this.$.addUserRequest.headers['Content-Type'] = "application/json";
+        this.$.addUserRequest.generateRequest();
       }
     }
 
