@@ -147,6 +147,8 @@
       }
 
       _handleEditButtonClicked(event){
+        this.$.updateUsername.value = event.path[4].cells[0].innerHTML;
+        this.$.updatePassword.value = event.path[4].cells[1].innerHTML;
         this.$.updateUserForm.hidden = false;
       }
 
@@ -159,7 +161,7 @@
       }
 
       _handleUpdateCheckButtonClicked(event){
-        this.$.newUserForm.hidden = false;
+        this.$.updateUserForm.hidden = false;
         var body = {};
         body.Username = this.$.updateUsername.value;
         body.Password = this.$.updatePassword.value;
