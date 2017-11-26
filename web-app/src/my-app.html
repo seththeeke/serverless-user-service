@@ -39,6 +39,16 @@
         font-size: 20px;
         font-weight: bold;
       }
+
+      paper-spinner[active] {
+        display:inline-block;
+      }
+
+      paper-spinner {
+        display: none;
+        height: 100px;
+        width: 100px;
+      }
     </style>
 
     <h1>Serverless User Service</h1>
@@ -58,26 +68,28 @@
       </div>
       <paper-spinner id="tableSpinner" active>
       </paper-spinner>
-      <table id="userTable">
-        <tr id="tableHeaderRow">
-          <th>Username</th>
-          <th>Password</th>
-          <th>
-            <paper-icon-button icon="autorenew" on-click="_updateUserTable"></paper-icon-button> 
-            <paper-icon-button icon="add" on-click="_handleAddButtonClicked"></paper-icon-button>
-          </th>
-        </tr>
-        <template is="dom-repeat" items="[[users]]" as="user">
-          <tr>
-            <td>[[user.Username]]</td>
-            <td>[[user.Password]]</td>
-            <td>
-              <paper-icon-button icon="create" on-click="_handleEditButtonClicked"></paper-icon-button> 
-              <paper-icon-button icon="delete" on-click="_handleDeleteButtonClicked"></paper-icon-button>
-            </td> 
+      <div id="tableWrapper" hidden>
+        <table id="userTable">
+          <tr id="tableHeaderRow">
+            <th>Username</th>
+            <th>Password</th>
+            <th>
+              <paper-icon-button icon="autorenew" on-click="_updateUserTable"></paper-icon-button> 
+              <paper-icon-button icon="add" on-click="_handleAddButtonClicked"></paper-icon-button>
+            </th>
           </tr>
-        </template>
-      </table>
+          <template is="dom-repeat" items="[[users]]" as="user">
+            <tr>
+              <td>[[user.Username]]</td>
+              <td>[[user.Password]]</td>
+              <td>
+                <paper-icon-button icon="create" on-click="_handleEditButtonClicked"></paper-icon-button> 
+                <paper-icon-button icon="delete" on-click="_handleDeleteButtonClicked"></paper-icon-button>
+              </td> 
+            </tr>
+          </template>
+        </table>
+      </div>
     </div>
 
     <iron-ajax
@@ -126,6 +138,7 @@
 
       handleGetUsers(event){
         this.set("users", event.detail.response);
+        this.$.tableWrapper.hidden = false;
         this.$.tableSpinner.active = false;
       }
 
@@ -165,8 +178,19 @@
       }
 
       _updateUserTable(){
+        this.$.newUserForm.hidden = true;
+        this.$.updateUserForm.hidden = true;
+        this._clearInputs();
+        this.$.tableWrapper.hidden = true;
         this.$.tableSpinner.active = true;
         this.$.getUsersRequest.generateRequest();
+      }
+
+      _clearInputs(){
+        this.$.password.value = "";
+        this.$.username.value = "";
+        this.$.updatePassword.value = "";
+        this.$.updateUsername.value = "";
       }
     }
 
